@@ -87,6 +87,7 @@ export const quickActions = [
     label: 'Manage Rooms',
     description: 'View, add or update room inventory',
     module: 'Module 3',
+    to: '/rooms',
   },
   {
     id: 'guests',

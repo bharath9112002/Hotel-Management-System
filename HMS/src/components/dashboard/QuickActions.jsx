@@ -1,7 +1,14 @@
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export default function QuickActions({ actions }) {
+  const navigate = useNavigate()
+
   const handleClick = (action) => {
+    if (action.to) {
+      navigate(action.to)
+      return
+    }
     toast.info(`${action.label} lands in ${action.module} — coming soon.`)
   }
 
