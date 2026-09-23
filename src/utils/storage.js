@@ -21,18 +21,26 @@ const DEMO_USERS = [
 ]
 
 export function getUsers() {
+  let users = []
   try {
     const raw = localStorage.getItem(USERS_KEY)
-    const users = raw ? JSON.parse(raw) : []
-    if (!Array.isArray(users) || users.length === 0) {
-      localStorage.setItem(USERS_KEY, JSON.stringify(DEMO_USERS))
-      return DEMO_USERS
+    const parsed = raw ? JSON.parse(raw) : []
+    if (Array.isArray(parsed)) {
+      users = parsed
     }
-    return users
   } catch {
-    localStorage.setItem(USERS_KEY, JSON.stringify(DEMO_USERS))
-    return DEMO_USERS
+    users = []
   }
+
+  const missingDemoUsers = DEMO_USERS.filter(
+    (demo) => !users.some((u) => u.email.toLowerCase() === demo.email.toLowerCase()),
+  )
+  if (missingDemoUsers.length > 0) {
+    users = [...users, ...missingDemoUsers]
+    localStorage.setItem(USERS_KEY, JSON.stringify(users))
+  }
+
+  return users
 }
 
 export function saveUsers(users) {
