@@ -144,11 +144,6 @@ export default function Sidebar({ open, onClose }) {
                 </svg>
                 {item.label}
               </span>
-              {!item.active && (
-                <span className="rounded-full bg-ink-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-400">
-                  Soon
-                </span>
-              )}
             </div>
           ))}
         </nav>
