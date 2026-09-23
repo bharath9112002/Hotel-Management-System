@@ -5,6 +5,7 @@ const NAV_ITEMS = [
     label: 'Dashboard',
     to: '/dashboard',
     active: true,
+    adminOnly: true,
     icon: (
       <path
         d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6V11h-6v9Zm0-16v5h6V4h-6Z"
