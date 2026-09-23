@@ -32,19 +32,16 @@ export const AMENITIES_POOL = [
 export const ROOMS_PER_FLOOR = 8
 export const ROOM_PAGE_SIZE = 8
 
-// Curated interior-appropriate images (DummyJSON furniture/home-decoration
-// categories), cycled across rooms — the general /products feed used for
-// room data returns mostly unrelated product photos (cosmetics, gadgets),
+// Real hotel-room interior photos (Pexels, free to use), cycled across
+// rooms — the DummyJSON /products feed used for room data returns mostly
+// unrelated product photos (cosmetics, gadgets, single furniture pieces),
 // so images are sourced from this fixed set instead.
-export const ROOM_IMAGES = [
-  'https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-bed/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-sofa/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/home-decoration/table-lamp/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/home-decoration/house-showpiece-plant/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/furniture/knoll-saarinen-executive-conference-chair/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/home-decoration/decoration-swing/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/furniture/wooden-bathroom-sink-with-mirror/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/home-decoration/family-tree-photo-frame/thumbnail.webp',
-  'https://cdn.dummyjson.com/product-images/home-decoration/plant-pot/thumbnail.webp',
+const PEXELS_ROOM_PHOTO_IDS = [
+  34496715, 2889618, 97083, 6394559, 18651505, 34496702, 3754698, 279805,
+  38624798, 7609139, 31967701, 11063185, 24461266, 37748240, 36916378,
 ]
+
+export const ROOM_IMAGES = PEXELS_ROOM_PHOTO_IDS.map(
+  (id) =>
+    `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800`,
+)

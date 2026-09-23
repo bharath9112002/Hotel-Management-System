@@ -1,5 +1,10 @@
 import { useForm } from 'react-hook-form'
-import { AMENITIES_POOL, AVAILABILITY_STATUSES, ROOM_TYPES } from '../../data/roomConstants'
+import {
+  AMENITIES_POOL,
+  AVAILABILITY_STATUSES,
+  ROOM_IMAGES,
+  ROOM_TYPES,
+} from '../../data/roomConstants'
 import Modal from '../Modal'
 import TextInput from '../TextInput'
 
@@ -8,6 +13,8 @@ export default function RoomFormModal({ room, onClose, onSubmit }) {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -17,10 +24,12 @@ export default function RoomFormModal({ room, onClose, onSubmit }) {
       capacity: room?.capacity ?? 1,
       floorNumber: room?.floorNumber ?? 1,
       availability: room?.availability ?? AVAILABILITY_STATUSES[0],
-      image: room?.image ?? '',
+      image: room?.image ?? ROOM_IMAGES[0],
       amenities: room?.amenities ?? [],
     },
   })
+
+  const selectedImage = watch('image')
 
   const submit = async (data) => {
     await onSubmit({ ...data, pricePerNight: Number(data.pricePerNight) })
@@ -111,13 +120,30 @@ export default function RoomFormModal({ room, onClose, onSubmit }) {
           </div>
         </div>
 
-        <TextInput
-          id="image"
-          label="Image URL"
-          placeholder="https://…"
-          error={errors.image?.message}
-          {...register('image', { required: 'Image URL is required.' })}
-        />
+        <div>
+          <p className="mb-1.5 text-sm font-medium text-ink-700">Room photo</p>
+          <div className="grid grid-cols-5 gap-2 sm:grid-cols-8">
+            {ROOM_IMAGES.map((url) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() => setValue('image', url, { shouldValidate: true })}
+                aria-label="Select this room photo"
+                className={`aspect-square overflow-hidden rounded-lg border-2 transition ${
+                  selectedImage === url
+                    ? 'border-brand-600 ring-2 ring-brand-400/50'
+                    : 'border-transparent hover:border-ink-200'
+                }`}
+              >
+                <img src={url} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
+          <input type="hidden" {...register('image', { required: 'Please choose a room photo.' })} />
+          {errors.image && (
+            <p className="mt-1.5 text-xs font-medium text-red-500">{errors.image.message}</p>
+          )}
+        </div>
 
         <div>
           <p className="mb-1.5 text-sm font-medium text-ink-700">Amenities</p>
