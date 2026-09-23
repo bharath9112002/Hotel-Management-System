@@ -87,8 +87,26 @@ const ICONS = {
   ),
 }
 
+const USER_QUICK_ACTION_IDS = ['rooms', 'booking', 'checkin', 'payments']
+
 export default function Dashboard() {
   const { user } = useAuth()
+  const isAdmin = user?.role === 'Admin'
+  const firstName = user?.fullName?.split(' ')[0] ?? 'there'
+
+  if (!isAdmin) {
+    const userActions = quickActions.filter((action) => USER_QUICK_ACTION_IDS.includes(action.id))
+    return (
+      <DashboardShell
+        title={`Welcome, ${firstName}`}
+        subtitle="Here's your quick access to daily front-desk operations."
+      >
+        <div className="mx-auto max-w-2xl">
+          <QuickActions actions={userActions} />
+        </div>
+      </DashboardShell>
+    )
+  }
 
   const stats = [
     { label: 'Total rooms', value: roomStats.totalRooms, icon: ICONS.rooms },
@@ -112,7 +130,7 @@ export default function Dashboard() {
 
   return (
     <DashboardShell
-      title={`Welcome, ${user?.fullName?.split(' ')[0] ?? 'there'}`}
+      title={`Welcome, ${firstName}`}
       subtitle="Here's what's happening at Grandview today."
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
