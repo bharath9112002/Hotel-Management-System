@@ -1,3 +1,5 @@
+import { useAuth } from '../../context/AuthContext'
+
 const NAV_ITEMS = [
   {
     label: 'Dashboard',
@@ -54,9 +56,53 @@ const NAV_ITEMS = [
       </>
     ),
   },
+  {
+    label: 'Guests',
+    adminOnly: true,
+    icon: (
+      <>
+        <circle cx="9" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+        <path
+          d="M3.5 20c.8-3.4 3-5.2 5.5-5.2s4.7 1.8 5.5 5.2M15.5 8.5a3 3 0 1 1 3.6 2.94M17 14.3c2 .3 3.3 1.7 3.9 4.2"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+      </>
+    ),
+  },
+  {
+    label: 'History',
+    adminOnly: true,
+    icon: (
+      <path
+        d="M4 4.5V10h5.5M4.3 13.5A8 8 0 1 0 6 6.3L4 10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ),
+  },
+  {
+    label: 'Reports',
+    adminOnly: true,
+    icon: (
+      <path
+        d="M5 20V10m6.5 10V4M18 20v-6.5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    ),
+  },
 ]
 
 export default function Sidebar({ open, onClose }) {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'Admin'
+  const items = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin)
+
   return (
     <>
       {open && (
@@ -92,7 +138,7 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
-          {NAV_ITEMS.map((item) => (
+          {items.map((item) => (
             <div
               key={item.label}
               className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition ${
