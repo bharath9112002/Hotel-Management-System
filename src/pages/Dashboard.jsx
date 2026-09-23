@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom'
 import DashboardShell from '../components/layout/DashboardShell'
 import QuickActions from '../components/dashboard/QuickActions'
 import RecentBookings from '../components/dashboard/RecentBookings'
@@ -87,25 +88,12 @@ const ICONS = {
   ),
 }
 
-const USER_QUICK_ACTION_IDS = ['rooms', 'booking', 'checkin', 'payments']
-
 export default function Dashboard() {
   const { user } = useAuth()
-  const isAdmin = user?.role === 'Admin'
   const firstName = user?.fullName?.split(' ')[0] ?? 'there'
 
-  if (!isAdmin) {
-    const userActions = quickActions.filter((action) => USER_QUICK_ACTION_IDS.includes(action.id))
-    return (
-      <DashboardShell
-        title={`Welcome, ${firstName}`}
-        subtitle="Here's your quick access to daily front-desk operations."
-      >
-        <div className="mx-auto max-w-2xl">
-          <QuickActions actions={userActions} />
-        </div>
-      </DashboardShell>
-    )
+  if (user?.role !== 'Admin') {
+    return <Navigate to="/rooms" replace />
   }
 
   const stats = [

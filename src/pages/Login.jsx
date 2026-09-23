@@ -5,6 +5,7 @@ import AuthLayout from '../components/AuthLayout'
 import PasswordInput from '../components/PasswordInput'
 import TextInput from '../components/TextInput'
 import { useAuth } from '../context/AuthContext'
+import { getHomeRoute } from '../utils/roleHome'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -33,7 +34,7 @@ export default function Login() {
     try {
       const user = login(data)
       toast.success(`Welcome back, ${user.fullName.split(' ')[0]}!`)
-      const redirectTo = location.state?.from?.pathname ?? '/dashboard'
+      const redirectTo = location.state?.from?.pathname ?? getHomeRoute(user)
       navigate(redirectTo, { replace: true })
     } catch (err) {
       toast.error(err.message)

@@ -1,10 +1,10 @@
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 const NAV_ITEMS = [
   {
     label: 'Dashboard',
     to: '/dashboard',
-    active: true,
     adminOnly: true,
     icon: (
       <path
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Rooms',
+    to: '/rooms',
     icon: (
       <path
         d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"
@@ -101,6 +102,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ open, onClose }) {
   const { user } = useAuth()
+  const location = useLocation()
   const isAdmin = user?.role === 'Admin'
   const items = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin)
 
@@ -139,23 +141,43 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
-          {items.map((item) => (
-            <div
-              key={item.label}
-              className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                item.active
-                  ? 'bg-brand-50 text-brand-700'
-                  : 'cursor-default text-ink-400 opacity-70'
-              }`}
-            >
+          {items.map((item) => {
+            const isActive = Boolean(item.to) && location.pathname === item.to
+            const content = (
               <span className="flex items-center gap-3">
                 <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
                   {item.icon}
                 </svg>
                 {item.label}
               </span>
-            </div>
-          ))}
+            )
+
+            if (item.to) {
+              return (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={onClose}
+                  className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-brand-50 text-brand-700'
+                      : 'text-ink-500 hover:bg-ink-50 hover:text-ink-700'
+                  }`}
+                >
+                  {content}
+                </Link>
+              )
+            }
+
+            return (
+              <div
+                key={item.label}
+                className="flex cursor-default items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium text-ink-400 opacity-70"
+              >
+                {content}
+              </div>
+            )
+          })}
         </nav>
       </aside>
     </>
