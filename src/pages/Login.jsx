@@ -8,6 +8,11 @@ import { useAuth } from '../context/AuthContext'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+const DEMO_ACCOUNTS = [
+  { label: 'Admin', email: 'admin@hms.com', password: 'Admin@123' },
+  { label: 'User', email: 'user@hms.com', password: 'User@123' },
+]
+
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -15,8 +20,14 @@ export default function Login() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({ mode: 'onTouched' })
+
+  const fillDemoAccount = (account) => {
+    setValue('email', account.email, { shouldValidate: true })
+    setValue('password', account.password, { shouldValidate: true })
+  }
 
   const onSubmit = async (data) => {
     try {
@@ -42,9 +53,23 @@ export default function Login() {
         </>
       }
     >
-      <div className="mb-5 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-xs text-brand-700">
-        Demo access: <span className="font-semibold">admin@hms.com</span> /{' '}
-        <span className="font-semibold">Admin@123</span>
+      <div className="mb-5">
+        <p className="mb-2 text-xs font-medium text-ink-400">Quick demo access</p>
+        <div className="grid grid-cols-2 gap-2">
+          {DEMO_ACCOUNTS.map((account) => (
+            <button
+              key={account.label}
+              type="button"
+              onClick={() => fillDemoAccount(account)}
+              className="group rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-left transition hover:border-brand-400 hover:bg-brand-100"
+            >
+              <p className="text-xs font-semibold text-brand-700">{account.label}</p>
+              <p className="truncate text-[11px] text-brand-600/80 group-hover:text-brand-700">
+                {account.email}
+              </p>
+            </button>
+          ))}
+        </div>
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>

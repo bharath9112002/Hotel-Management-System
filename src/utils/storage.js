@@ -1,27 +1,37 @@
 const USERS_KEY = 'hms_users'
 const SESSION_KEY = 'hms_current_user'
 
-const DEMO_USER = {
-  id: 'demo-admin',
-  fullName: 'Demo Admin',
-  email: 'admin@hms.com',
-  password: 'Admin@123',
-  role: 'Admin',
-  createdAt: new Date().toISOString(),
-}
+const DEMO_USERS = [
+  {
+    id: 'demo-admin',
+    fullName: 'Demo Admin',
+    email: 'admin@hms.com',
+    password: 'Admin@123',
+    role: 'Admin',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'demo-user',
+    fullName: 'Demo User',
+    email: 'user@hms.com',
+    password: 'User@123',
+    role: 'Front Desk',
+    createdAt: new Date().toISOString(),
+  },
+]
 
 export function getUsers() {
   try {
     const raw = localStorage.getItem(USERS_KEY)
     const users = raw ? JSON.parse(raw) : []
     if (!Array.isArray(users) || users.length === 0) {
-      localStorage.setItem(USERS_KEY, JSON.stringify([DEMO_USER]))
-      return [DEMO_USER]
+      localStorage.setItem(USERS_KEY, JSON.stringify(DEMO_USERS))
+      return DEMO_USERS
     }
     return users
   } catch {
-    localStorage.setItem(USERS_KEY, JSON.stringify([DEMO_USER]))
-    return [DEMO_USER]
+    localStorage.setItem(USERS_KEY, JSON.stringify(DEMO_USERS))
+    return DEMO_USERS
   }
 }
 
