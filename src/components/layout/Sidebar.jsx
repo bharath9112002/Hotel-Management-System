@@ -25,20 +25,6 @@ const NAV_ITEMS = [
     ),
   },
   {
-    label: 'Guests',
-    icon: (
-      <>
-        <circle cx="9" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.6" />
-        <path
-          d="M3.5 20c.8-3.4 3-5.2 5.5-5.2s4.7 1.8 5.5 5.2M15.5 8.5a3 3 0 1 1 3.6 2.94M17 14.3c2 .3 3.3 1.7 3.9 4.2"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </>
-    ),
-  },
-  {
     label: 'Bookings',
     icon: (
       <>
@@ -66,29 +52,6 @@ const NAV_ITEMS = [
         <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" />
         <path d="M3 10.5h18M7 15h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </>
-    ),
-  },
-  {
-    label: 'History',
-    icon: (
-      <path
-        d="M4 4.5V10h5.5M4.3 13.5A8 8 0 1 0 6 6.3L4 10"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-  },
-  {
-    label: 'Reports',
-    icon: (
-      <path
-        d="M5 20V10m6.5 10V4M18 20v-6.5"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
     ),
   },
 ]
