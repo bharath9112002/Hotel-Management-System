@@ -53,6 +53,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Payments',
+    to: '/payments',
     icon: (
       <>
         <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" />

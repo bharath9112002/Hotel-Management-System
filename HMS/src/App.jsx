@@ -11,8 +11,10 @@ import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
 import GuestProfile from './pages/GuestProfile'
 import Guests from './pages/Guests'
+import Invoice from './pages/Invoice'
 import Login from './pages/Login'
 import NewBooking from './pages/NewBooking'
+import Payments from './pages/Payments'
 import Register from './pages/Register'
 import RoomDetails from './pages/RoomDetails'
 import Rooms from './pages/Rooms'
@@ -66,6 +68,8 @@ function App() {
           <Route path="/bookings/new" element={<NewBooking />} />
           <Route path="/bookings/:id" element={<BookingDetails />} />
           <Route path="/check-in-out" element={<CheckInOut />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/payments/:bookingId" element={<Invoice />} />
           <Route element={<AdminRoute />}>
             <Route path="/guests" element={<Guests />} />
             <Route path="/guests/:id" element={<GuestProfile />} />

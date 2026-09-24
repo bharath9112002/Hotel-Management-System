@@ -175,6 +175,13 @@ export default function BookingDetails() {
                 )}
                 <button
                   type="button"
+                  onClick={() => navigate(`/payments/${booking.id}`)}
+                  className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 transition hover:bg-ink-50"
+                >
+                  View invoice
+                </button>
+                <button
+                  type="button"
                   onClick={() => navigate('/bookings/new')}
                   className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 transition hover:bg-ink-50"
                 >

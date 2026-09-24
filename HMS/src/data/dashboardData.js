@@ -115,6 +115,7 @@ export const quickActions = [
     label: 'Payments',
     description: 'Review invoices and payment status',
     module: 'Module 7',
+    to: '/payments',
   },
   {
     id: 'reports',

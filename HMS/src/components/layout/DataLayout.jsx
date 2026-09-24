@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { BookingsProvider } from '../../context/BookingsContext'
 import { GuestsProvider } from '../../context/GuestsContext'
+import { PaymentsProvider } from '../../context/PaymentsContext'
 import { RoomsProvider } from '../../context/RoomsContext'
 
 // Rooms, guests and bookings reference each other (a booking needs a guest and
@@ -11,7 +12,9 @@ export default function DataLayout() {
     <RoomsProvider>
       <GuestsProvider>
         <BookingsProvider>
-          <Outlet />
+          <PaymentsProvider>
+            <Outlet />
+          </PaymentsProvider>
         </BookingsProvider>
       </GuestsProvider>
     </RoomsProvider>
