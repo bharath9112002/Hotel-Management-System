@@ -57,6 +57,7 @@ export function RoomsProvider({ children }) {
   }, [])
 
   const editRoom = useCallback(
+    
     async (id, formValues) => {
       const existing = rooms.find((room) => room.id === id)
       if (!existing?.isLocal) {
