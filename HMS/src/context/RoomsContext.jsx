@@ -32,10 +32,7 @@ export function RoomsProvider({ children }) {
   }, [loadRooms])
 
   const addRoom = useCallback(async (formValues) => {
-    // DummyJSON's /products/add returns a fake id (e.g. 195) that isn't a
-    // real record in their dataset -- later PUT/DELETE calls against it
-    // 404. Rooms created this way are marked isLocal so edit/delete skip
-    // the (doomed) network call and just update local state instead.
+
     const created = await createRoomProduct({
       title: `${formValues.roomType} ${formValues.roomNumber}`,
       price: formValues.pricePerNight,
@@ -57,7 +54,7 @@ export function RoomsProvider({ children }) {
   }, [])
 
   const editRoom = useCallback(
-    
+
     async (id, formValues) => {
       const existing = rooms.find((room) => room.id === id)
       if (!existing?.isLocal) {

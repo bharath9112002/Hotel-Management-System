@@ -1,10 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
+import GuestsLayout from './components/layout/GuestsLayout'
 import RoomsLayout from './components/layout/RoomsLayout'
 import { useAuth } from './context/AuthContext'
 import { getHomeRoute } from './utils/roleHome'
 import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
+import GuestProfile from './pages/GuestProfile'
+import Guests from './pages/Guests'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import RoomDetails from './pages/RoomDetails'
@@ -55,6 +58,10 @@ function App() {
         <Route element={<RoomsLayout />}>
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<RoomDetails />} />
+        </Route>
+        <Route element={<GuestsLayout />}>
+          <Route path="/guests" element={<Guests />} />
+          <Route path="/guests/:id" element={<GuestProfile />} />
         </Route>
       </Route>
 

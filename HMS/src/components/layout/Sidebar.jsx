@@ -60,6 +60,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Guests',
+    to: '/guests',
     adminOnly: true,
     icon: (
       <>
@@ -142,7 +143,9 @@ export default function Sidebar({ open, onClose }) {
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
           {items.map((item) => {
-            const isActive = Boolean(item.to) && location.pathname === item.to
+            const isActive =
+              Boolean(item.to) &&
+              (location.pathname === item.to || location.pathname.startsWith(`${item.to}/`))
             const content = (
               <span className="flex items-center gap-3">
                 <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">
