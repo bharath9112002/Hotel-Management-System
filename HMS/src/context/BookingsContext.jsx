@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
-import { calculateNights, findConflictingBooking } from '../utils/bookingUtils'
+import { useRooms } from './RoomsContext'
+import { calculateNights, findConflictingBooking, todayISO } from '../utils/bookingUtils'
+import { formatDate } from '../utils/format'
 
 const BOOKINGS_KEY = 'hms_bookings'
 
@@ -29,6 +31,7 @@ function nextBookingId(bookings) {
 
 export function BookingsProvider({ children }) {
   const [bookings, setBookings] = useState(readBookings)
+  const { rooms, setRoomAvailability } = useRooms()
 
   const commit = useCallback((updater) => {
     setBookings((prev) => {
@@ -84,9 +87,69 @@ export function BookingsProvider({ children }) {
     [commit],
   )
 
+  // Check-in/out validate against the current state and throw a user-readable
+  // Error when the action isn't allowed. On success they update the booking
+  // status and the room's availability together.
+  const checkInBooking = useCallback(
+    (id) => {
+      const booking = bookings.find((b) => b.id === id)
+      if (!booking) throw new Error('Booking not found.')
+      if (booking.status !== 'Confirmed') {
+        throw new Error(`Only confirmed bookings can be checked in (this one is ${booking.status}).`)
+      }
+
+      const today = todayISO()
+      if (today < booking.checkIn) {
+        throw new Error(`Check-in opens on ${formatDate(booking.checkIn)}.`)
+      }
+      if (today >= booking.checkOut) {
+        throw new Error('The stay period for this booking has already ended.')
+      }
+
+      const room = rooms.find((r) => r.id === booking.roomId)
+      if (room?.availability === 'Maintenance') {
+        throw new Error(`Room ${booking.roomNumber} is under maintenance and can't be checked in to.`)
+      }
+      const occupant = bookings.find(
+        (b) => b.id !== id && b.roomId === booking.roomId && b.status === 'Checked-in',
+      )
+      if (occupant) {
+        throw new Error(
+          `Room ${booking.roomNumber} is still occupied by ${occupant.guestName} (${occupant.id}). Check them out first.`,
+        )
+      }
+
+      const checkedInAt = new Date().toISOString()
+      commit((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, status: 'Checked-in', checkedInAt } : b)),
+      )
+      setRoomAvailability(booking.roomId, 'Occupied')
+      return { ...booking, status: 'Checked-in', checkedInAt }
+    },
+    [bookings, rooms, commit, setRoomAvailability],
+  )
+
+  const checkOutBooking = useCallback(
+    (id) => {
+      const booking = bookings.find((b) => b.id === id)
+      if (!booking) throw new Error('Booking not found.')
+      if (booking.status !== 'Checked-in') {
+        throw new Error(`Only checked-in guests can be checked out (this booking is ${booking.status}).`)
+      }
+
+      const checkedOutAt = new Date().toISOString()
+      commit((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, status: 'Checked-out', checkedOutAt } : b)),
+      )
+      setRoomAvailability(booking.roomId, 'Available')
+      return { ...booking, status: 'Checked-out', checkedOutAt }
+    },
+    [bookings, commit, setRoomAvailability],
+  )
+
   const value = useMemo(
-    () => ({ bookings, addBooking, cancelBooking }),
-    [bookings, addBooking, cancelBooking],
+    () => ({ bookings, addBooking, cancelBooking, checkInBooking, checkOutBooking }),
+    [bookings, addBooking, cancelBooking, checkInBooking, checkOutBooking],
   )
 
   return <BookingsContext.Provider value={value}>{children}</BookingsContext.Provider>

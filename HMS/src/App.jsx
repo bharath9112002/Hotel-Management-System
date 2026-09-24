@@ -6,6 +6,7 @@ import { useAuth } from './context/AuthContext'
 import { getHomeRoute } from './utils/roleHome'
 import BookingDetails from './pages/BookingDetails'
 import Bookings from './pages/Bookings'
+import CheckInOut from './pages/CheckInOut'
 import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
 import GuestProfile from './pages/GuestProfile'
@@ -64,6 +65,7 @@ function App() {
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/bookings/new" element={<NewBooking />} />
           <Route path="/bookings/:id" element={<BookingDetails />} />
+          <Route path="/check-in-out" element={<CheckInOut />} />
           <Route element={<AdminRoute />}>
             <Route path="/guests" element={<Guests />} />
             <Route path="/guests/:id" element={<GuestProfile />} />

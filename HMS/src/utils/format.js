@@ -36,3 +36,14 @@ export function formatCompactNumber(value) {
 export function formatShortDate(isoDate) {
   return dateFormatter.format(new Date(isoDate))
 }
+
+const dateTimeFormatter = new Intl.DateTimeFormat('en-IN', {
+  day: 'numeric',
+  month: 'short',
+  hour: 'numeric',
+  minute: '2-digit',
+})
+
+export function formatDateTime(isoTimestamp) {
+  return dateTimeFormatter.format(new Date(isoTimestamp))
+}

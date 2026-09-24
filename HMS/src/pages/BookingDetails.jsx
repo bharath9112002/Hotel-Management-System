@@ -6,7 +6,10 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import StatusBadge from '../components/dashboard/StatusBadge'
 import DashboardShell from '../components/layout/DashboardShell'
 import { useBookings } from '../context/BookingsContext'
-import { formatDate } from '../utils/format'
+import { formatDuration, stayDurationMs } from '../utils/bookingUtils'
+import { formatDate, formatDateTime } from '../utils/format'
+import { useNow } from '../utils/useNow'
+import { useStayActions } from '../utils/useStayActions'
 
 export default function BookingDetails() {
   const { id } = useParams()
@@ -14,6 +17,9 @@ export default function BookingDetails() {
   const location = useLocation()
   const { bookings, cancelBooking } = useBookings()
   const [isCancelOpen, setIsCancelOpen] = useState(false)
+  const [isCheckOutOpen, setIsCheckOutOpen] = useState(false)
+  const { checkIn, checkOut } = useStayActions()
+  const now = useNow()
 
   const booking = bookings.find((b) => b.id === id)
   const justBooked = Boolean(location.state?.justBooked)
@@ -22,6 +28,11 @@ export default function BookingDetails() {
     cancelBooking(booking.id)
     toast.success(`Booking ${booking.id} cancelled.`)
     setIsCancelOpen(false)
+  }
+
+  const handleCheckOut = () => {
+    checkOut(booking)
+    setIsCheckOutOpen(false)
   }
 
   return (
@@ -114,13 +125,58 @@ export default function BookingDetails() {
                     {formatDate(booking.createdAt.slice(0, 10))}
                   </dd>
                 </div>
+                {booking.checkedInAt && (
+                  <div>
+                    <dt className="text-xs font-medium text-ink-400">Checked in</dt>
+                    <dd className="mt-1 text-sm font-semibold text-ink-800">
+                      {formatDateTime(booking.checkedInAt)}
+                    </dd>
+                  </div>
+                )}
+                {booking.checkedOutAt && (
+                  <div>
+                    <dt className="text-xs font-medium text-ink-400">Checked out</dt>
+                    <dd className="mt-1 text-sm font-semibold text-ink-800">
+                      {formatDateTime(booking.checkedOutAt)}
+                    </dd>
+                  </div>
+                )}
+                {booking.checkedInAt && (
+                  <div>
+                    <dt className="text-xs font-medium text-ink-400">Stay duration</dt>
+                    <dd className="mt-1 text-sm font-semibold text-ink-800">
+                      {formatDuration(stayDurationMs(booking, now))}
+                      {!booking.checkedOutAt && (
+                        <span className="block text-xs font-normal text-ink-400">Still in-house</span>
+                      )}
+                    </dd>
+                  </div>
+                )}
               </dl>
 
               <div className="flex flex-wrap gap-3 border-t border-ink-50 pt-5">
+                {booking.status === 'Confirmed' && (
+                  <button
+                    type="button"
+                    onClick={() => checkIn(booking)}
+                    className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+                  >
+                    Check in
+                  </button>
+                )}
+                {booking.status === 'Checked-in' && (
+                  <button
+                    type="button"
+                    onClick={() => setIsCheckOutOpen(true)}
+                    className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+                  >
+                    Check out
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => navigate('/bookings/new')}
-                  className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+                  className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 transition hover:bg-ink-50"
                 >
                   New booking
                 </button>
@@ -152,6 +208,16 @@ export default function BookingDetails() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={isCheckOutOpen}
+        tone="primary"
+        title="Check out guest"
+        message={`Check ${booking?.guestName} out of Room ${booking?.roomNumber}? The room will be marked available.`}
+        confirmLabel="Check out"
+        onConfirm={handleCheckOut}
+        onCancel={() => setIsCheckOutOpen(false)}
+      />
 
       <ConfirmDialog
         open={isCancelOpen}

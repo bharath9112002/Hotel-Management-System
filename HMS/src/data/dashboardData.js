@@ -108,6 +108,7 @@ export const quickActions = [
     label: 'Check-In / Check-Out',
     description: 'Process arrivals and departures',
     module: 'Module 6',
+    to: '/check-in-out',
   },
   {
     id: 'payments',

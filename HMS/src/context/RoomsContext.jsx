@@ -12,6 +12,27 @@ import { mapProductToRoom } from '../utils/roomTransform'
 const RoomsContext = createContext(null)
 
 const ROOMS_CACHE_KEY = 'hms_cache_rooms'
+const ROOM_STATUS_KEY = 'hms_room_status'
+
+// Availability changes made by check-in/out (or a room edit) are stored as
+// per-room overrides layered on top of the fetched rooms, so they survive
+// refetches and reloads instead of being reset to the mock feed's status.
+function readStatusOverrides() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ROOM_STATUS_KEY))
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeStatusOverrides(overrides) {
+  try {
+    localStorage.setItem(ROOM_STATUS_KEY, JSON.stringify(overrides))
+  } catch {
+    // Storage unavailable/full: overrides still apply for this session.
+  }
+}
 
 function roomFromForm(id, formValues, isLocal) {
   return {
@@ -37,12 +58,13 @@ function roomPayload(formValues) {
 
 export function RoomsProvider({ children }) {
   // Cached rooms render immediately; the fetch below then refreshes them.
-  const [rooms, setRooms] = useState(() => readListCache(ROOMS_CACHE_KEY) ?? [])
+  const [baseRooms, setRooms] = useState(() => readListCache(ROOMS_CACHE_KEY) ?? [])
+  const [statusOverrides, setStatusOverrides] = useState(readStatusOverrides)
   const [isLoading, setIsLoading] = useState(() => readListCache(ROOMS_CACHE_KEY) === null)
   const [error, setError] = useState(null)
 
   const latestLoadId = useRef(0)
-  const hasData = useRef(rooms.length > 0)
+  const hasData = useRef(baseRooms.length > 0)
 
   const loadRooms = useCallback(async () => {
     // Only the most recent request may write state, so a slow earlier
@@ -72,6 +94,22 @@ export function RoomsProvider({ children }) {
     loadRooms()
   }, [loadRooms])
 
+  const rooms = useMemo(
+    () =>
+      baseRooms.map((room) =>
+        statusOverrides[room.id] ? { ...room, availability: statusOverrides[room.id] } : room,
+      ),
+    [baseRooms, statusOverrides],
+  )
+
+  const setRoomAvailability = useCallback((id, availability) => {
+    setStatusOverrides((prev) => {
+      const next = { ...prev, [id]: availability }
+      writeStatusOverrides(next)
+      return next
+    })
+  }, [])
+
   // DummyJSON is a slow mock (a write can take several seconds) and doesn't
   // persist anything, so changes are applied to local state straight away and
   // synced in the background instead of making the user wait on the request.
@@ -90,15 +128,17 @@ export function RoomsProvider({ children }) {
       const existing = rooms.find((room) => room.id === id)
       const updatedRoom = roomFromForm(id, formValues, existing?.isLocal ?? false)
       setRooms((prev) => prev.map((room) => (room.id === id ? updatedRoom : room)))
+      setRoomAvailability(id, updatedRoom.availability)
       if (existing && !existing.isLocal) {
         updateRoomProduct(id, roomPayload(formValues)).catch(() => {
           setRooms((prev) => prev.map((room) => (room.id === id ? existing : room)))
+          setRoomAvailability(id, existing.availability)
           toast.error(`Could not save changes to room ${formValues.roomNumber}. They were reverted.`)
         })
       }
       return updatedRoom
     },
-    [rooms],
+    [rooms, setRoomAvailability],
   )
 
   const removeRoom = useCallback(
@@ -121,8 +161,17 @@ export function RoomsProvider({ children }) {
   )
 
   const value = useMemo(
-    () => ({ rooms, isLoading, error, refetch: loadRooms, addRoom, editRoom, removeRoom }),
-    [rooms, isLoading, error, loadRooms, addRoom, editRoom, removeRoom],
+    () => ({
+      rooms,
+      isLoading,
+      error,
+      refetch: loadRooms,
+      addRoom,
+      editRoom,
+      removeRoom,
+      setRoomAvailability,
+    }),
+    [rooms, isLoading, error, loadRooms, addRoom, editRoom, removeRoom, setRoomAvailability],
   )
 
   return <RoomsContext.Provider value={value}>{children}</RoomsContext.Provider>

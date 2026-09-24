@@ -38,3 +38,26 @@ export function findConflictingBooking(bookings, roomId, checkIn, checkOut, excl
     ) ?? null
   )
 }
+
+// Actual time on site: from check-in to check-out, or to `now` while the
+// guest is still in-house.
+export function stayDurationMs(booking, now = Date.now()) {
+  if (!booking.checkedInAt) return 0
+  const end = booking.checkedOutAt ? Date.parse(booking.checkedOutAt) : now
+  return Math.max(0, end - Date.parse(booking.checkedInAt))
+}
+
+export function formatDuration(ms) {
+  const totalMinutes = Math.floor(ms / 60000)
+  if (totalMinutes < 1) return 'Less than a minute'
+
+  const days = Math.floor(totalMinutes / 1440)
+  const hours = Math.floor((totalMinutes % 1440) / 60)
+  const minutes = totalMinutes % 60
+
+  if (days > 0) {
+    return `${days} ${days === 1 ? 'day' : 'days'}${hours > 0 ? ` ${hours} hr` : ''}`
+  }
+  if (hours > 0) return `${hours} hr${minutes > 0 ? ` ${minutes} min` : ''}`
+  return `${minutes} min`
+}

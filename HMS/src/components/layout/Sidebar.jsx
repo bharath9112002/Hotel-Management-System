@@ -40,6 +40,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Check-In / Out',
+    to: '/check-in-out',
     icon: (
       <path
         d="M9 6V4h11v16H9v-2M4 12h11m0 0-3.5-3.5M15 12l-3.5 3.5"
