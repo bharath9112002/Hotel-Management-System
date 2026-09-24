@@ -106,7 +106,14 @@ export default function GuestProfile() {
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3 border-t border-ink-50 pt-5">
+          <div className="mt-6 flex flex-wrap gap-3 border-t border-ink-50 pt-5">
+            <button
+              type="button"
+              onClick={() => navigate(`/bookings/new?guest=${guest.id}`)}
+              className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
+            >
+              New booking
+            </button>
             <button
               type="button"
               onClick={() => setIsEditing(true)}

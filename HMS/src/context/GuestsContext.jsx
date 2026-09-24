@@ -7,6 +7,7 @@ import {
   updateGuestUser,
 } from '../services/guestsApi'
 import { guestToUserPayload, mapUserToGuest } from '../utils/guestTransform'
+import { readListCache, writeListCache } from '../utils/listCache'
 
 const GuestsContext = createContext(null)
 
@@ -20,27 +21,36 @@ function normalizeGuestValues(formValues) {
   }
 }
 
+const GUESTS_CACHE_KEY = 'hms_cache_guests'
+
 export function GuestsProvider({ children }) {
-  const [guests, setGuests] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  // Cached guests render immediately; the fetch below then refreshes them.
+  const [guests, setGuests] = useState(() => readListCache(GUESTS_CACHE_KEY) ?? [])
+  const [isLoading, setIsLoading] = useState(() => readListCache(GUESTS_CACHE_KEY) === null)
   const [error, setError] = useState(null)
 
   const latestLoadId = useRef(0)
+  const hasData = useRef(guests.length > 0)
 
   const loadGuests = useCallback(async () => {
     // Only the most recent request may write state, so a slow earlier
     // response (e.g. StrictMode's double effect run) can't clobber newer data.
     const loadId = ++latestLoadId.current
-    setIsLoading(true)
     setError(null)
+    // Only show the spinner when there is nothing to display yet.
+    if (!hasData.current) setIsLoading(true)
     try {
       const users = await fetchGuestUsers()
       if (loadId !== latestLoadId.current) return
+      const fetched = users.map(mapUserToGuest)
+      writeListCache(GUESTS_CACHE_KEY, fetched)
+      hasData.current = true
       // Keep guests added locally while the request was in flight.
-      setGuests((prev) => [...prev.filter((guest) => guest.isLocal), ...users.map(mapUserToGuest)])
+      setGuests((prev) => [...prev.filter((guest) => guest.isLocal), ...fetched])
     } catch {
       if (loadId !== latestLoadId.current) return
-      setError('Could not load guests right now. Please try again.')
+      // A failed background refresh is harmless when cached data is showing.
+      if (!hasData.current) setError('Could not load guests right now. Please try again.')
     } finally {
       if (loadId === latestLoadId.current) setIsLoading(false)
     }

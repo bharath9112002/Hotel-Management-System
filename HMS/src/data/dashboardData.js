@@ -94,12 +94,14 @@ export const quickActions = [
     label: 'Add Guest',
     description: 'Register a new guest profile',
     module: 'Module 4',
+    to: '/guests',
   },
   {
     id: 'booking',
     label: 'New Booking',
     description: 'Create a reservation for a guest',
     module: 'Module 5',
+    to: '/bookings/new',
   },
   {
     id: 'checkin',

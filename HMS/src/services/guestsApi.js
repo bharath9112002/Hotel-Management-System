@@ -1,18 +1,21 @@
 import axios from 'axios'
+import { withRetry } from './retry'
 
 const client = axios.create({
   baseURL: 'https://dummyjson.com',
-  timeout: 30000,
+  timeout: 6000,
 })
 
 const GUEST_COUNT = 40
 const GUEST_FIELDS = 'firstName,lastName,email,phone,address'
 
-export async function fetchGuestUsers() {
-  const { data } = await client.get('/users', {
-    params: { limit: GUEST_COUNT, select: GUEST_FIELDS },
+export function fetchGuestUsers() {
+  return withRetry(async () => {
+    const { data } = await client.get('/users', {
+      params: { limit: GUEST_COUNT, select: GUEST_FIELDS },
+    })
+    return data.users
   })
-  return data.users
 }
 
 export async function createGuestUser(payload) {

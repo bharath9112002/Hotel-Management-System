@@ -1,14 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
-import GuestsLayout from './components/layout/GuestsLayout'
-import RoomsLayout from './components/layout/RoomsLayout'
+import AdminRoute from './components/AdminRoute'
+import DataLayout from './components/layout/DataLayout'
 import { useAuth } from './context/AuthContext'
 import { getHomeRoute } from './utils/roleHome'
+import BookingDetails from './pages/BookingDetails'
+import Bookings from './pages/Bookings'
 import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
 import GuestProfile from './pages/GuestProfile'
 import Guests from './pages/Guests'
 import Login from './pages/Login'
+import NewBooking from './pages/NewBooking'
 import Register from './pages/Register'
 import RoomDetails from './pages/RoomDetails'
 import Rooms from './pages/Rooms'
@@ -54,14 +57,17 @@ function App() {
       />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route element={<RoomsLayout />}>
+        <Route element={<DataLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<RoomDetails />} />
-        </Route>
-        <Route element={<GuestsLayout />}>
-          <Route path="/guests" element={<Guests />} />
-          <Route path="/guests/:id" element={<GuestProfile />} />
+          <Route path="/bookings" element={<Bookings />} />
+          <Route path="/bookings/new" element={<NewBooking />} />
+          <Route path="/bookings/:id" element={<BookingDetails />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/guests" element={<Guests />} />
+            <Route path="/guests/:id" element={<GuestProfile />} />
+          </Route>
         </Route>
       </Route>
 

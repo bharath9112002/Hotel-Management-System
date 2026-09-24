@@ -30,6 +30,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Bookings',
+    to: '/bookings',
     icon: (
       <>
         <rect x="3.5" y="4.5" width="17" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
