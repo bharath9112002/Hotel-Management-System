@@ -10,15 +10,11 @@ const DEMO_USERS = [
     role: 'Admin',
     createdAt: new Date().toISOString(),
   },
-  {
-    id: 'demo-user',
-    fullName: 'Demo User',
-    email: 'user@hms.com',
-    password: 'User@123',
-    role: 'Front Desk',
-    createdAt: new Date().toISOString(),
-  },
 ]
+
+// The demo user account was removed; browsers that already stored it get it
+// dropped on the next read instead of keeping a dead login around.
+const REMOVED_DEMO_USER_ID = 'demo-user'
 
 export function getUsers() {
   let users = []
@@ -26,7 +22,10 @@ export function getUsers() {
     const raw = localStorage.getItem(USERS_KEY)
     const parsed = raw ? JSON.parse(raw) : []
     if (Array.isArray(parsed)) {
-      users = parsed
+      users = parsed.filter((u) => u.id !== REMOVED_DEMO_USER_ID)
+      if (users.length !== parsed.length) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(users))
+      }
     }
   } catch {
     users = []
@@ -50,7 +49,12 @@ export function saveUsers(users) {
 export function getSession() {
   try {
     const raw = localStorage.getItem(SESSION_KEY)
-    return raw ? JSON.parse(raw) : null
+    const session = raw ? JSON.parse(raw) : null
+    if (session?.id === REMOVED_DEMO_USER_ID) {
+      localStorage.removeItem(SESSION_KEY)
+      return null
+    }
+    return session
   } catch {
     return null
   }

@@ -139,24 +139,35 @@ export default function RoomDetails() {
               </div>
             </div>
 
-            {isAdmin && (
-              <div className="mt-6 flex gap-3 border-t border-ink-50 pt-5">
+            <div className="mt-6 flex flex-wrap gap-3 border-t border-ink-50 pt-5">
+              {room.availability !== 'Maintenance' && (
                 <button
                   type="button"
-                  onClick={() => setIsEditing(true)}
-                  className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 transition hover:bg-ink-50"
+                  onClick={() => navigate(`/bookings/new?room=${room.id}`)}
+                  className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
                 >
-                  Edit room
+                  Book this room
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setIsDeleteOpen(true)}
-                  className="rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
-                >
-                  Delete room
-                </button>
-              </div>
-            )}
+              )}
+              {isAdmin && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 transition hover:bg-ink-50"
+                  >
+                    Edit room
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteOpen(true)}
+                    className="rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                  >
+                    Delete room
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

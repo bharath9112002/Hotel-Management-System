@@ -11,7 +11,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const DEMO_ACCOUNTS = [
   { label: 'Admin', email: 'admin@hms.com', password: 'Admin@123' },
-  { label: 'User', email: 'user@hms.com', password: 'User@123' },
 ]
 
 export default function Login() {
@@ -56,7 +55,7 @@ export default function Login() {
     >
       <div className="mb-5">
         <p className="mb-2 text-xs font-medium text-ink-400">Quick demo access</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2">
           {DEMO_ACCOUNTS.map((account) => (
             <button
               key={account.label}

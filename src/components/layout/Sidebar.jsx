@@ -30,6 +30,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Bookings',
+    to: '/bookings',
     icon: (
       <>
         <rect x="3.5" y="4.5" width="17" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
@@ -38,7 +39,21 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: 'Booking History',
+    to: '/booking-history',
+    icon: (
+      <path
+        d="M3.5 12a8.5 8.5 0 1 0 2.5-6M3.5 4v4h4M12 7.5V12l3 2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ),
+  },
+  {
     label: 'Check-In / Out',
+    to: '/check-in-out',
     icon: (
       <path
         d="M9 6V4h11v16H9v-2M4 12h11m0 0-3.5-3.5M15 12l-3.5 3.5"
@@ -51,6 +66,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Payments',
+    to: '/payments',
     icon: (
       <>
         <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" />
@@ -60,6 +76,7 @@ const NAV_ITEMS = [
   },
   {
     label: 'Guests',
+    to: '/guests',
     adminOnly: true,
     icon: (
       <>
@@ -71,31 +88,6 @@ const NAV_ITEMS = [
           strokeLinecap="round"
         />
       </>
-    ),
-  },
-  {
-    label: 'History',
-    adminOnly: true,
-    icon: (
-      <path
-        d="M4 4.5V10h5.5M4.3 13.5A8 8 0 1 0 6 6.3L4 10"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-  },
-  {
-    label: 'Reports',
-    adminOnly: true,
-    icon: (
-      <path
-        d="M5 20V10m6.5 10V4M18 20v-6.5"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
     ),
   },
 ]
@@ -142,7 +134,9 @@ export default function Sidebar({ open, onClose }) {
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
           {items.map((item) => {
-            const isActive = Boolean(item.to) && location.pathname === item.to
+            const isActive =
+              Boolean(item.to) &&
+              (location.pathname === item.to || location.pathname.startsWith(`${item.to}/`))
             const content = (
               <span className="flex items-center gap-3">
                 <svg viewBox="0 0 24 24" fill="none" className="h-4.5 w-4.5">

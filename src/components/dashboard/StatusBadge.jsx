@@ -1,7 +1,7 @@
 const STATUS_STYLES = {
   Confirmed: 'bg-blue-50 text-blue-700',
   'Checked-in': 'bg-emerald-50 text-emerald-700',
-  'Checked-out': 'bg-ink-100 text-ink-600',
+  Completed: 'bg-violet-50 text-violet-700',
   Pending: 'bg-amber-50 text-amber-700',
   Cancelled: 'bg-red-50 text-red-600',
 }

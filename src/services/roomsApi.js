@@ -1,15 +1,23 @@
 import axios from 'axios'
+import { withRetry } from './retry'
 
 const client = axios.create({
   baseURL: 'https://dummyjson.com',
-  timeout: 10000,
+  timeout: 6000,
 })
 
 const ROOM_COUNT = 48
 
-export async function fetchRoomProducts() {
-  const { data } = await client.get('/products', { params: { limit: ROOM_COUNT } })
-  return data.products
+// Rooms are derived from just each product's id and price; asking for only
+// those keeps the response ~1KB instead of ~70KB, which the mock server
+// handles far more reliably.
+export function fetchRoomProducts() {
+  return withRetry(async () => {
+    const { data } = await client.get('/products', {
+      params: { limit: ROOM_COUNT, select: 'price' },
+    })
+    return data.products
+  })
 }
 
 export async function createRoomProduct(payload) {

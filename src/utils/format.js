@@ -14,6 +14,17 @@ const dateFormatter = new Intl.DateTimeFormat('en-IN', {
   month: 'short',
 })
 
+const fullDateFormatter = new Intl.DateTimeFormat('en-IN', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+})
+
+// Parsed as local midnight so a plain 'YYYY-MM-DD' never shifts a day.
+export function formatDate(isoDate) {
+  return fullDateFormatter.format(new Date(`${isoDate}T00:00:00`))
+}
+
 export function formatCurrency(value) {
   return currencyFormatter.format(value)
 }
@@ -24,4 +35,15 @@ export function formatCompactNumber(value) {
 
 export function formatShortDate(isoDate) {
   return dateFormatter.format(new Date(isoDate))
+}
+
+const dateTimeFormatter = new Intl.DateTimeFormat('en-IN', {
+  day: 'numeric',
+  month: 'short',
+  hour: 'numeric',
+  minute: '2-digit',
+})
+
+export function formatDateTime(isoTimestamp) {
+  return dateTimeFormatter.format(new Date(isoTimestamp))
 }

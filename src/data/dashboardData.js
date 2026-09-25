@@ -56,7 +56,7 @@ export const recentBookings = [
     roomType: 'Standard Twin',
     checkIn: '2026-09-20',
     checkOut: '2026-09-23',
-    status: 'Checked-out',
+    status: 'Completed',
     amount: 9600,
   },
   {
@@ -94,24 +94,28 @@ export const quickActions = [
     label: 'Add Guest',
     description: 'Register a new guest profile',
     module: 'Module 4',
+    to: '/guests',
   },
   {
     id: 'booking',
     label: 'New Booking',
     description: 'Create a reservation for a guest',
     module: 'Module 5',
+    to: '/bookings/new',
   },
   {
     id: 'checkin',
     label: 'Check-In / Check-Out',
     description: 'Process arrivals and departures',
     module: 'Module 6',
+    to: '/check-in-out',
   },
   {
     id: 'payments',
     label: 'Payments',
     description: 'Review invoices and payment status',
     module: 'Module 7',
+    to: '/payments',
   },
   {
     id: 'reports',
