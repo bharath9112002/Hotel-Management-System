@@ -17,6 +17,7 @@ import Login from './pages/Login'
 import NewBooking from './pages/NewBooking'
 import Payments from './pages/Payments'
 import Register from './pages/Register'
+import Reports from './pages/Reports'
 import RoomDetails from './pages/RoomDetails'
 import Rooms from './pages/Rooms'
 
@@ -75,6 +76,7 @@ function App() {
           <Route element={<AdminRoute />}>
             <Route path="/guests" element={<Guests />} />
             <Route path="/guests/:id" element={<GuestProfile />} />
+            <Route path="/reports" element={<Reports />} />
           </Route>
         </Route>
       </Route>

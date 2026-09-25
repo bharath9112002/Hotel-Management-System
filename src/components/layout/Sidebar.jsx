@@ -90,6 +90,19 @@ const NAV_ITEMS = [
       </>
     ),
   },
+  {
+    label: 'Reports',
+    to: '/reports',
+    adminOnly: true,
+    icon: (
+      <path
+        d="M4 20h16M7 16v-5m5 5V7m5 9v-8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    ),
+  },
 ]
 
 export default function Sidebar({ open, onClose }) {

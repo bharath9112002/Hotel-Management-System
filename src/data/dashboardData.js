@@ -122,5 +122,6 @@ export const quickActions = [
     label: 'Reports',
     description: 'Occupancy, revenue and trends',
     module: 'Module 9',
+    to: '/reports',
   },
 ]

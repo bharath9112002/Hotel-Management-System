@@ -1,4 +1,4 @@
-export default function StatCard({ label, value, icon, delta, deltaLabel, tone = 'brand' }) {
+export default function StatCard({ label, value, icon, delta, deltaLabel, hint, tone = 'brand' }) {
   const isUp = typeof delta === 'number' && delta >= 0
   const toneClasses = {
     brand: 'bg-brand-50 text-brand-600',
@@ -36,6 +36,7 @@ export default function StatCard({ label, value, icon, delta, deltaLabel, tone =
           {Math.abs(delta)}% {deltaLabel ?? 'vs yesterday'}
         </p>
       )}
+      {hint && <p className="mt-1.5 text-xs text-ink-400">{hint}</p>}
     </div>
   )
 }
