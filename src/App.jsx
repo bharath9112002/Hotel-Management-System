@@ -1,121 +1,88 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
+import DataLayout from './components/layout/DataLayout'
+import { useAuth } from './context/AuthContext'
+import { getHomeRoute } from './utils/roleHome'
+import BookingDetails from './pages/BookingDetails'
+import BookingHistory from './pages/BookingHistory'
+import Bookings from './pages/Bookings'
+import CheckInOut from './pages/CheckInOut'
+import Dashboard from './pages/Dashboard'
+import ForgotPassword from './pages/ForgotPassword'
+import GuestProfile from './pages/GuestProfile'
+import Guests from './pages/Guests'
+import Invoice from './pages/Invoice'
+import Login from './pages/Login'
+import NewBooking from './pages/NewBooking'
+import Payments from './pages/Payments'
+import Register from './pages/Register'
+import Reports from './pages/Reports'
+import RoomDetails from './pages/RoomDetails'
+import Rooms from './pages/Rooms'
+
+function GuestOnlyRoute({ children }) {
+  const { user, isAuthenticated } = useAuth()
+  return isAuthenticated ? <Navigate to={getHomeRoute(user)} replace /> : children
+}
+
+function FallbackRoute() {
+  const { user, isAuthenticated } = useAuth()
+  return <Navigate to={isAuthenticated ? getHomeRoute(user) : '/login'} replace />
+}
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Routes>
+      <Route path="/" element={<FallbackRoute />} />
 
-      <div className="ticks"></div>
+      <Route
+        path="/login"
+        element={
+          <GuestOnlyRoute>
+            <Login />
+          </GuestOnlyRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <GuestOnlyRoute>
+            <Register />
+          </GuestOnlyRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <GuestOnlyRoute>
+            <ForgotPassword />
+          </GuestOnlyRoute>
+        }
+      />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DataLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/:id" element={<RoomDetails />} />
+          <Route path="/bookings" element={<Bookings />} />
+          <Route path="/bookings/new" element={<NewBooking />} />
+          <Route path="/bookings/:id" element={<BookingDetails />} />
+          <Route path="/booking-history" element={<BookingHistory />} />
+          <Route path="/check-in-out" element={<CheckInOut />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/payments/:bookingId" element={<Invoice />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/guests" element={<Guests />} />
+            <Route path="/guests/:id" element={<GuestProfile />} />
+            <Route path="/reports" element={<Reports />} />
+          </Route>
+        </Route>
+      </Route>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <Route path="*" element={<FallbackRoute />} />
+    </Routes>
   )
 }
 
